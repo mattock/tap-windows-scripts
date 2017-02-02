@@ -3,21 +3,29 @@
 # Remove all tap-windows adapters from the driver store using PnPutil.exe
 
 Param(
-    [switch]$Yes
+    [switch]$Yes,
+    [switch]$Help
 )
 
 Function Show-Usage {
-    Write-Host "Usage: Remove-Tapwindows.ps1 [-Yes]"
+    Write-Host
+    Write-Host "Usage: Remove-Tapwindows.ps1 [-Yes] [-Help]"
     Write-Host
     Write-Host "Parameters:"
     Write-Host "    -Yes    Remove drivers instead of just showing what would get removed"
+    Write-Host "    -Help   Display this help message"
     Write-Host
     Write-host "Disclaimer: USE AT YOUR OWN RISK."
+    exit 1
 }
 
 $driverlist = Invoke-Command -ScriptBlock { & C:\Windows\System32\PnPutil.exe -e }
 
 $tap_found = $false
+
+if ($Help) {
+	Show-Usage
+}
 
 foreach ($line in $driverlist) {
     if ($line.StartsWith("Published name")) {
